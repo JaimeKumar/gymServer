@@ -60,6 +60,15 @@ app.post('/newWeight', async (req, res) => {
     res.status(200).json(log.cat[log.pos])
 })
 
+app.post('/movePos', async (req, res) => {
+    let log = await readFile()
+    log.pos = log.pos + req.body.amnt;
+    let didUpdate = await updateLog(log);
+    if (didUpdate) {
+        res.json(log.cat[log.pos])
+    }
+})
+
 app.listen(process.env.PORT || 4000, () => {
     console.log("server is listen");
 });
