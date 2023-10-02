@@ -11,7 +11,6 @@ async function readFile() {
 }
 
 async function updateLog(data) {
-    console.log(data)
     if (Object.keys(data).length < 4) return;
     try {
         await fs.writeFile('log.json', JSON.stringify(data), 'utf8')
@@ -29,6 +28,7 @@ async function checkForDayChange() {
     if (log.date !== date) {
         log.date = date;
         log.pos = log.pos + 1;
+        log.newReps = 0;
         if (log.pos > log.cat.length-1) {
             log.pos = 0;
         }
@@ -40,7 +40,7 @@ checkForDayChange();
 
 app.post('/addRep', async (req, res) => {
     let log = await readFile()
-    log.newReps = log.newReps + 1;
+    log.newReps = log.newReps + req.body.amnt;
     let didUpdate = await updateLog(log);
     if (didUpdate) {
         res.json({newReps: log.newReps})
@@ -49,7 +49,7 @@ app.post('/addRep', async (req, res) => {
 
 app.get('/getInfo', async (req, res) => {
     let log = await readFile()
-    res.json(log.cat[log.pos])
+    res.json({cat: log.cat[log.pos], newReps: log.newReps})
 })
 
 app.post('/newWeight', async (req, res) => {
