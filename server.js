@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 require('dotenv').config()
-const uri = `mongodb+srv://jimTrack-user:JcssXUVAUr7wDPJG@jimtracker.jtdklby.mongodb.net/?retryWrites=true&w=majority`
+const uri = `mongodb+srv://jimTrack-user:${process.env.MONGO_PW}@jimtracker.jtdklby.mongodb.net/?retryWrites=true&w=majority`
 const express = require('express');
 const app = express();
 const cors = require("cors");
