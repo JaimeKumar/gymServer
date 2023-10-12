@@ -1,5 +1,5 @@
-const MongoClient = require('mongodb').MongoClient;
 require('dotenv').config()
+const MongoClient = require('mongodb').MongoClient;
 const uri = `mongodb+srv://jimTrack-user:${process.env.MONGO_PW}@jimtracker.jtdklby.mongodb.net/?retryWrites=true&w=majority`
 const express = require('express');
 const app = express();
@@ -54,11 +54,7 @@ async function checkForDayChange() {
     let log = await readDB()
     if (log.date !== date) {
         log.date = date;
-        log.pos = log.pos + 1;
-        log.newReps = 0;
-        if (log.pos > log.cat.length-1) {
-            log.pos = 0;
-        }
+        log.pos = (log.pos + 1 + log.cat.length) % log.cat.length;
         writeDB(log)
     }
 }
@@ -89,8 +85,7 @@ app.post('/newWeight', async (req, res) => {
 
 app.post('/movePos', async (req, res) => {
     let log = await readDB()
-    log.pos = (log.pos + req.body.amnt) % log.cat.length;
-    console.log((log.pos + req.body.amnt) % (log.cat.length))
+    log.pos = (log.pos + req.body.amnt + log.cat.length) % log.cat.length;
     let didUpdate = await writeDB(log);
     if (didUpdate) {
         res.json(log.cat[log.pos])
