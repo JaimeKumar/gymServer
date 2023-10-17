@@ -71,6 +71,7 @@ app.post('/addRep', async (req, res) => {
 })
 
 app.get('/getInfo', async (req, res) => {
+    console.log('connection')
     let log = await readDB()
     res.json({cat: log.cat[log.pos], newReps: log.newReps})
 })
